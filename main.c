@@ -10,6 +10,9 @@
 #include "board.h"
 #include "constants.h"
 
+char movement = 0;
+pthread_mutex_t movement_mutex;
+
 // Function to disable canonical mode and echo
 void disable_canonical_mode() {
     struct termios old_tio, new_tio;
@@ -18,50 +21,68 @@ void disable_canonical_mode() {
     tcgetattr(STDIN_FILENO, &old_tio);
 
     // Copy old settings and modify new settings
+
     new_tio = old_tio;
     new_tio.c_lflag &= ~(ICANON | ECHO); // Disable canonical mode and echo
 
     // Apply the new settings
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
 }
-
 void* input_handler(void* arg) {
-    struct Board *board= (struct Board*) arg; 
-
-    while (1) {
-      char movement = getchar();
-      move_block(board, movement);
-      print_table(board);
+  while (1) {
+    char key_input = getchar();
+    if (key_input != '\0') {
+      pthread_mutex_lock(&movement_mutex);
+      movement = key_input;
+      pthread_mutex_unlock(&movement_mutex);
     }
+  }
 }
 
 int main(int argc, char *argv[]) {   
-  srand(time(0));
-  struct Board tetris_board = createTable();
-  struct Block curr = load_block(); 
+  Board tetris_board = create_table();
+  initialize_all_blocks();
+  Block curr = load_block();
+  
   tetris_board.current_block = &curr; 
+   
+  srand(time(0));
   time_t current_time;
   time(&current_time);
-
   time_t move_time;
   time(&move_time);
 
   disable_canonical_mode();
-  
+   
   pthread_t input_thread;
-  pthread_create(&input_thread, NULL, input_handler, &tetris_board);
+  pthread_create(&input_thread, NULL, input_handler, NULL);
  
   while (1) {
     time_t next_time;  
     time(&next_time);
     
+
     if (next_time - current_time > 1) {
       current_time = next_time;
-      update_board(&tetris_board);
-      print_table(&tetris_board);
-    }
+      pthread_mutex_lock(&movement_mutex);
 
+  //    update_board(&tetris_board, movement);
+      print_table(tetris_board);
+
+      pthread_mutex_unlock(&movement_mutex);
+    } else if (movement != 0) {
+      pthread_mutex_lock(&movement_mutex);
+
+   //   move_block(&tetris_board, movement);
+      print_table(tetris_board);
+
+      pthread_mutex_unlock(&movement_mutex);
+
+      movement = 0;
+    }
   }
   pthread_join(input_thread, NULL);
+
   return 0;
+
 }

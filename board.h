@@ -2,15 +2,14 @@
 #define BOARD_H
 
 #include "constants.h"
-struct Board {
-  char cells[R0WS][COLS];
-  int size;
-  struct Block *current_block;
-};
+#include "tetromino.h"
 
-struct Board createTable();
-void update_board (struct Board *board);
-void place_block (struct Board *board); 
-void print_table (struct Board *board);
+typedef struct {
+  char cells[R0WS][COLS];
+  Block *current_block;
+} Board;
+
+Board create_table();
+void print_table(Board board);
 
 #endif

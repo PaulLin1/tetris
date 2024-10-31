@@ -1,94 +1,27 @@
 #include "tetromino.h"
 #include "board.h"
 #include "constants.h"
+
+#include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
-// Define all Tetris blocks
-char all_blocks[6][4][4] = {
-  // char s_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'0', '1', '1', '0'},
-      {'0', '1', '1', '0'},
-      {'0', '0', '0', '0'}
-  },
-  // char l_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'0', '0', '1', '0'},
-      {'1', '1', '1', '0'},
-      {'0', '0', '0', '0'}
-  },
-  // char reverse_l_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'0', '1', '0', '0'},
-      {'0', '1', '1', '1'},
-      {'0', '0', '0', '0'}
-  },
-  // char line_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'1', '1', '1', '1'},
-      {'0', '0', '0', '0'},
-      {'0', '0', '0', '0'}
-  },
-  // char t_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'0', '1', '1', '1'},
-      {'0', '0', '1', '0'},
-      {'0', '0', '0', '0'}
-  },
-  // char z_block[4][4]
-  {
-      {'0', '0', '0', '0'},
-      {'0', '1', '1', '0'},
-      {'0', '0', '1', '1'},
-      {'0', '0', '0', '0'}
-  }
-};
+Block all_blocks[7];
 
-struct Block load_block() {
-  int rd_num = rand() % 5; 
-  int initial_x = 3;
-  int initial_y = 0;
-
-  struct Block block;
-  block.current_x = 3;
-  block.current_y = 0;
-  block.rotation = 0;
-  block.dropped = 0;
-
-  for (int y = 0; y < 4; y++) {
-    for (int x = 0; x < 4; x++) {
-      block.cells[y][x] = all_blocks[rd_num][y][x];
-    }
-  }
+void initialize_all_blocks() {
+  size_t o_block_length = 3;
+  int *o_block_arr = malloc(o_block_length * o_block_length * sizeof(int));
+  int o_block_template[2][2] = {
+  {2, 2},
+  {2, 2}
+  };
   
-  return block;
+  Block new_block = {o_block_arr, o_block_length, 0, 0, 0, 0};
+  all_blocks[0] = new_block;
 }
 
-void move_block (struct Board *board, char movement) {
-  if (board->current_block->current_x == 0 && movement == 'a' ||
-      board->current_block->current_x == COLS - 4 && movement == 'd') {
-   ; 
-  }
-  else {
-    if (movement == 'w') {
-      board->current_block->current_x++;
-    } else if (movement == 'a') {
-      board->current_block->current_x--;
-    } else if (movement == 's') {
-      board->current_block->current_y++;
-    } else if (movement == 'd') {
-      board->current_block->current_x++;
-    }
-  }  
-  if (board->current_block->current_y == R0WS -4) {
-    place_block(board); 
-    board->current_block = (struct Block *)malloc(sizeof(struct Block));
-    *(board->current_block) = load_block();
-  }
-
+Block load_block() {
+  Block new_block;
+  memcpy(&new_block, &all_blocks[0], sizeof(Block));
+  return new_block;
 }
