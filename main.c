@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
    
   srand(time(0));
   time_t current_time;
+
   time(&current_time);
   time_t move_time;
   time(&move_time);
@@ -61,19 +62,20 @@ int main(int argc, char *argv[]) {
     time_t next_time;  
     time(&next_time);
     
+    new_block(&tetris_board);
 
     if (next_time - current_time > 1) {
       current_time = next_time;
       pthread_mutex_lock(&movement_mutex);
 
-  //    update_board(&tetris_board, movement);
+      drop_block(&tetris_board);
       print_table(tetris_board);
 
       pthread_mutex_unlock(&movement_mutex);
     } else if (movement != 0) {
       pthread_mutex_lock(&movement_mutex);
 
-   //   move_block(&tetris_board, movement);
+      move_block(tetris_board.current_block, movement);
       print_table(tetris_board);
 
       pthread_mutex_unlock(&movement_mutex);
