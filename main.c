@@ -72,9 +72,9 @@ int main(int argc, char *argv[]) {
       print_table(tetris_board);
 
       pthread_mutex_unlock(&movement_mutex);
-    } else if (movement != 0) {
+    } else if (movement != 0 && check_collision(tetris_board, movement)) {
       pthread_mutex_lock(&movement_mutex);
-
+    
       move_block(tetris_board.current_block, movement);
       print_table(tetris_board);
 
