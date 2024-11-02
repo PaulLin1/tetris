@@ -9,8 +9,8 @@ typedef struct {
   Block *current_block;
 } Board;
 
-Board create_table();
-void print_table(Board board);
+Board init_board();
+void update_board(Board* board);
 void drop_block(Board* board);
 void new_block(Board* board); 
 int check_collision(Board board, char movement); 

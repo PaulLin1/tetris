@@ -1,7 +1,6 @@
 #include "tetromino.h"
 #include "board.h"
 #include "constants.h"
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -135,14 +134,13 @@ void move_block(Block* block, char movement) {
     int n = block->size;
     int rotated[n * n];
 
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < n; j++) {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
         rotated[j*n + (n- 1 -i)] = block->cells[i * n +j];
-
       }
     }
 
-    for (int i = 0; i < n * n; i++) {
+    for (int i = 0; i < n * n; ++i) {
       block->cells[i] = rotated[i];
     }
 

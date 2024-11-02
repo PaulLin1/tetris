@@ -4,7 +4,7 @@ CFLAGS = -lglfw -lGL -lleif -lclipboard -lm -lxcb
 
 TARGET = window
 
-SRCS = window.c
+SRCS = window.c board.c tetromino.c
 
 OBJS = $(SRCS:.c=.o)
 

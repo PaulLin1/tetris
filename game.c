@@ -39,8 +39,8 @@ void* input_handler(void* arg) {
   }
 }
 
-int main(int argc, char *argv[]) {   
-  Board tetris_board = create_table();
+int init_game(int argc, char *argv[]) {   
+  Board tetris_board = init_board();
   initialize_all_blocks();
   Block curr = load_block();
   
@@ -84,7 +84,4 @@ int main(int argc, char *argv[]) {
     }
   }
   pthread_join(input_thread, NULL);
-
-  return 0;
-
 }
