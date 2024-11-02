@@ -94,13 +94,13 @@ int check_collision(Board board, char movement) {
     }
   }
 
-  if (movement == 'a' && block->current_x - l_hitbox_offset == 0) {
+  if (movement == 'a' && block->current_x + l_hitbox_offset <= 0) {
     return 0;
   }
-  if (movement == 'd' && block->current_x + r_hitbox_offset == COLS) {
+  if (movement == 'd' && block->current_x + r_hitbox_offset >= COLS) {
     return 0;
   }
-  if (movement == 's' && block->current_y + b_hitbox_offset == ROWS) {
+  if (movement == 's' && block->current_y + b_hitbox_offset >= ROWS) {
     block->dropped = 1;
     return 0;
   }
