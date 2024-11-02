@@ -13,6 +13,7 @@ Board init_board() {
       board.cells[y][x] = '*';
     }
   }
+  board.score = 0;
   return board;
 }
 
@@ -113,10 +114,62 @@ void new_block(Board* board) {
         }
       }
     }
+    tetris(board);
+    board->current_block = board->next_block;
     Block* z = malloc(sizeof(Block));
-    Block temp = load_block();
-    memcpy(z, &temp, sizeof(Block));
-    board->current_block = z; 
+    Block* temp = load_block();
+    memcpy(z, temp, sizeof(Block));
+    board->next_block = z; 
   }
+}
+
+void tetris(Board *board) {
+  int total = 0;
+
+  for (int i = 0; i < COLS; ++i) {
+    if (board->cells[ROWS - 1][i] == '1') {
+      total += 1; 
+    }
+  }
+
+  int clear_counter = 0;
+
+  while (total == COLS) {
+    clear_counter++;
+    for (int i = ROWS - 1; i > 0; --i) {
+      for (int j = 0; j < COLS; ++j) {
+        board->cells[i][j] = board->cells[i - 1][j];
+      }
+    }
+
+    for (int j = 0; j < COLS; ++j) {
+      board->cells[0][j] = '*';
+    }
+    total = 0;
+
+    for (int i = 0; i < COLS; ++i) {
+      if (board->cells[ROWS - 1][i] == '1') {
+        total += 1; 
+      }
+    }
+  }
+  
+  switch (clear_counter) {
+    case 1:
+      board->score += 100;
+      break;
+    case 2:
+      board->score += 300;
+      break;
+    case 3:
+      board->score += 500;
+      break;
+    case 4:
+      board->score += 800;
+      break;
+    default:
+      ;
+
+  } 
 }
 

@@ -50,12 +50,12 @@ static void render_game_board(Board board) {
 
       }
     }
- }
+  }
 
   lf_div_end();
 }
 
-static void render_next() {
+static void render_next(Board board) {
   const char* text = "Next";
   // Container
   {
@@ -75,11 +75,31 @@ static void render_next() {
   {
     lf_text(text);
   }
-
+  {
+    lf_next_line();
+    
+    int next_block_size = board.next_block->size;
+    for (int row = 0; row < next_block_size; ++row) {
+      for (int col = 0; col < next_block_size; ++col) {
+        float block_size = 30.0f;
+        LfColor color;
+        switch (board.next_block->cells[(row * next_block_size) +col]) {
+          case '1':
+            color = (LfColor){0, 94, 100, 255};
+            break;
+          default:
+            color = (LfColor){75, 69, 72, 255};
+            break;
+        }
+        lf_rect(block_size, block_size, color, 4.0f); 
+      }
+      lf_next_line();
+    }
+  }
   lf_div_end();
 }
 
-static void render_scoreboard() {
+static void render_scoreboard(Board board) {
   const char* text = "Scoreboard";
   // Container
   {
@@ -98,6 +118,10 @@ static void render_scoreboard() {
   // Text
   {
     lf_text(text);
+    lf_next_line();
+    char str[12];
+    sprintf(str, "%d", board.score);
+    lf_text(str);
   }
 
   lf_div_end();
@@ -134,8 +158,11 @@ int main(int argc, char *argv[])
 {
   Board game_board = init_board();
   initialize_all_blocks();
-  Block curr = load_block();
-  game_board.current_block = &curr; 
+  Block* curr = load_block();
+  game_board.current_block = curr; 
+  
+  Block* next_block = load_block();
+  game_board.next_block = next_block; 
   
   srand(time(0));
   time_t current_time;
@@ -183,8 +210,8 @@ int main(int argc, char *argv[])
 
     lf_begin();
     render_game_board(game_board);
-    render_next();
-    render_scoreboard();
+    render_next(game_board);
+    render_scoreboard(game_board);
     lf_end();
 
     glfwPollEvents();

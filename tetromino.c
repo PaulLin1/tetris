@@ -95,7 +95,7 @@ void initialize_all_blocks() {
   z_block_arr[5] = '1'; 
   z_block_arr[6] = '0'; 
   z_block_arr[7] = '0'; 
-  z_block_arr[8] = '0'; 
+  z_block_arr[7] = '0'; 
 
   Block z_block = {z_block_arr, z_block_length, 0, 0, 0, 0};
   all_blocks[5] = z_block;
@@ -116,10 +116,23 @@ void initialize_all_blocks() {
   all_blocks[6] = s_block;
 }
 
-Block load_block() {
+Block copy_block() {
+  
+}
+Block* load_block() {
   int rand_index = rand() % 7;
-  Block new_block;
-  memcpy(&new_block, &all_blocks[rand_index], sizeof(Block));
+  Block template = all_blocks[rand_index];
+
+  Block* new_block = malloc(sizeof(Block));
+
+  new_block->cells = malloc(template.size * template.size * sizeof(int));
+  memcpy(new_block->cells, template.cells, template.size * template.size * sizeof(int));
+  new_block->size = template.size;
+  new_block->current_x = template.current_x;
+  new_block->current_y = template.current_y;
+  new_block->rotation = template.rotation;
+  new_block->dropped = template.rotation;
+
   return new_block;
 }
 

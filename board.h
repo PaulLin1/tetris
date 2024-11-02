@@ -7,6 +7,8 @@
 typedef struct {
   char cells[ROWS][COLS];
   Block *current_block;
+  Block *next_block;
+  int score;
 } Board;
 
 Board init_board();
@@ -14,5 +16,6 @@ void update_board(Board* board);
 void drop_block(Board* board);
 void new_block(Board* board); 
 int check_collision(Board board, char movement); 
+void tetris(Board *board); 
 
 #endif
