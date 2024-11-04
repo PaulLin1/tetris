@@ -31,75 +31,92 @@ void update_board(Board* board) {
 }
 
 void drop_block(Board* board) {
-  if (check_collision(*board, 's')) {
+  if (check_collision(board, 's')) {
     board->current_block->current_y++;
   }
 }
 
-int check_collision(Board board, char movement) {
-  Block* block = board.current_block;
-
-  int col_sum[block->size];
-  int row_sum[block->size];
-
-  for (int y = 0; y < block->size; y++) {
-    int temp = 0;
-    int temp2 = 0;
-    for (int x = 0; x < block->size; x++) {
-      temp += (block->cells[(x * block->size) + y] - '0');
-      temp2 += (block->cells[(y * block->size) + x] - '0');
-    }
-    col_sum[y] = temp;
-    row_sum[y] = temp2;
-  }
-
-  int l_hitbox_offset = 0;
-
-  for (int i = 0; i < block->size; i++) {
-    if (col_sum[i] > 0) {
-      l_hitbox_offset = i;
+int check_collision(Board* board, char movement) {
+  Block* block = board->current_block;
+  int dx, dy;
+  switch (movement) {
+    case 'a':
+      dx = -1;
+      dy = 0;
       break;
-    }
-  }
-
-  int r_hitbox_offset = 0;
-
-  for (int i = block->size - 1; i >= 0; i--) {
-    if (col_sum[i] > 0) {
-      r_hitbox_offset = i + 1;
+    case 'd':
+      dx = 1;
+      dy = 0;
       break;
-    }
-  }
-
-  int b_hitbox_offset = block->size - 1;
-
-  for (int i = block->size - 1; i >= 0; i--) {
-    if (row_sum[i] > 0) {
-      b_hitbox_offset = i + 1;
+    case 's':
+      dx = 0;
+      dy = 1;
       break;
+    default:
+      dx = 0;
+      dy = 0;
+      break;
+  }
+  for (int i = 0; i < block->size; ++i) {
+    for (int j = 0; j < block->size; ++j) {
+      if (block->cells[(j * block->size) + i] == '1') {
+        int new_x = block->current_x + i + dx;
+        int new_y = block->current_y + j + dy;
+        if (new_y >= ROWS || (board->cells[new_y][new_x] == '1' && movement == 's')) {
+          block->dropped = 1;
+          return 0;
+        }
+        if (new_x < 0 || new_x >= COLS || new_y < 0 || new_y >= ROWS) {
+          return 0;
+        }
+        if (board->cells[new_y][new_x] == '1') {
+          return 0;
+        }
+      }
     }
-  }
-  
-  int bottom = block->current_y + b_hitbox_offset;
- 
-  for (int i = 0; i < block->size; i++) {
-    if (block->cells[((b_hitbox_offset - 1) * block->size) + i] == '1' && board.cells[bottom][block->current_x + i] == '1') {
-      block->dropped = 1;
-      return 0;
-    }
-  }
-
-  if (movement == 'a' && block->current_x + l_hitbox_offset <= 0) {
-    return 0;
-  }
-  if (movement == 'd' && block->current_x + r_hitbox_offset >= COLS) {
-    return 0;
-  }
-  if (movement == 's' && block->current_y + b_hitbox_offset >= ROWS) {
-    block->dropped = 1;
-    return 0;
   }
   return 1;
+}
+
+void move_block(Board* board, char movement) {
+  Block* block = board->current_block;
+  if (check_collision(board, movement)) {
+    if (movement == 's') {
+      block->current_y++;
+    } else if (movement == 'a') {
+        block->current_x--;
+    } else if (movement == 'd') {
+        block->current_x++;
+    }
+  }
+  if (movement == 'w') {
+    int n = block->size;
+    int rotated[n * n];
+    int temp[n*n];
+    for (int i = 0; i < n * n; ++i) {
+      temp[i] = block->cells[i];
+    }
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        rotated[j*n + (n- 1 -i)] = block->cells[i * n +j];
+      }
+    }
+    for (int i = 0; i < n * n; ++i) {
+      block->cells[i] = rotated[i];
+    }
+    
+    while (block->current_x < 0) {
+      block->current_x++;
+    }
+    while (block->current_x > COLS - block->size) {
+      block->current_y--;
+    }
+    if (!check_collision(board, 'l')) { 
+      for (int i = 0; i < n * n; ++i) {
+      block->cells[i] = temp[i];
+    }
+    }
+  }
 }
 
 void new_block(Board* board) {
@@ -124,36 +141,28 @@ void new_block(Board* board) {
 }
 
 void tetris(Board *board) {
-  int total = 0;
-
-  for (int i = 0; i < COLS; ++i) {
-    if (board->cells[ROWS - 1][i] == '1') {
-      total += 1; 
-    }
-  }
-
   int clear_counter = 0;
-
-  while (total == COLS) {
-    clear_counter++;
-    for (int i = ROWS - 1; i > 0; --i) {
-      for (int j = 0; j < COLS; ++j) {
-        board->cells[i][j] = board->cells[i - 1][j];
-      }
-    }
-
-    for (int j = 0; j < COLS; ++j) {
-      board->cells[0][j] = '*';
-    }
-    total = 0;
+  for (int j = 0; j < ROWS; ++j) {
+    int total = 0;
 
     for (int i = 0; i < COLS; ++i) {
-      if (board->cells[ROWS - 1][i] == '1') {
+      if (board->cells[j][i] == '1') {
         total += 1; 
       }
     }
+    if (total == COLS) {
+      clear_counter++;
+      for (int i = j; i > 0; --i) {
+        for (int k = 0; k < COLS; ++k) {
+          board->cells[i][k] = board->cells[i - 1][k];
+        }
+      }
+
+      for (int q = 0; q < COLS; ++q) {
+        board->cells[0][q] = '*';
+      }
+    }
   }
-  
   switch (clear_counter) {
     case 1:
       board->score += 100;
@@ -169,7 +178,6 @@ void tetris(Board *board) {
       break;
     default:
       ;
-
   } 
 }
 

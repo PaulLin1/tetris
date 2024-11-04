@@ -14,6 +14,5 @@ typedef struct {
 
 void initialize_all_blocks();
 Block* load_block(); 
-void move_block(Block* block, char movement);
 
 #endif // !TETROMINO_H

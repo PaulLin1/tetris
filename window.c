@@ -24,6 +24,7 @@ static void render_game_board(Board board) {
   // Container
   {
     LfUIElementProps props = lf_get_theme().div_props;
+    props.color = (LfColor){27, 47, 53, 255};
     lf_push_style_props(props);
 
     float width = 300.0f, height = 600.0f;
@@ -40,13 +41,13 @@ static void render_game_board(Board board) {
         LfColor color;
         switch (board.cells[row][col]) {
           case '1':
-            color = (LfColor){0, 94, 100, 255};
+            color = (LfColor){62, 33, 36, 255};
             break;
           default:
-            color = (LfColor){75, 69, 72, 255};
+            color = (LfColor){69, 80, 77, 255};
             break;
         }
-        lf_rect(block_size, block_size, color, 4.0f); 
+        lf_rect(block_size, block_size, color, 2.0f); 
 
       }
     }
@@ -61,7 +62,7 @@ static void render_next(Board board) {
   {
     LfUIElementProps props = lf_get_theme().div_props;
     props.corner_radius = 7.0f;
-    props.color = (LfColor){65, 167, 204, 255};
+    props.color = (LfColor){163, 161, 147, 255};
     lf_push_style_props(props);
 
     float width = 250.0f, height = 200.0f;
@@ -73,22 +74,31 @@ static void render_next(Board board) {
   
   // Text
   {
+    LfUIElementProps props = lf_get_theme().text_props;
+    props.text_color = LF_BLACK;
+    lf_push_style_props(props);
+
     lf_text(text);
+
+    lf_pop_style_props();
   }
   {
     lf_next_line();
     
+
+    lf_set_ptr_y_absolute(120);
     int next_block_size = board.next_block->size;
     for (int row = 0; row < next_block_size; ++row) {
+      lf_set_ptr_x_absolute(120);
       for (int col = 0; col < next_block_size; ++col) {
         float block_size = 30.0f;
         LfColor color;
         switch (board.next_block->cells[(row * next_block_size) +col]) {
           case '1':
-            color = (LfColor){0, 94, 100, 255};
+            color = (LfColor){62, 33, 36, 255};
             break;
           default:
-            color = (LfColor){75, 69, 72, 255};
+            color = (LfColor){163, 161, 147, 255};
             break;
         }
         lf_rect(block_size, block_size, color, 4.0f); 
@@ -105,7 +115,7 @@ static void render_scoreboard(Board board) {
   {
     LfUIElementProps props = lf_get_theme().div_props;
     props.corner_radius = 7.0f;
-    props.color = (LfColor){65, 167, 204, 255};
+    props.color = (LfColor){163, 161, 147, 255};
     lf_push_style_props(props);
 
     float width = 250.0f, height = 200.0f;
@@ -117,11 +127,15 @@ static void render_scoreboard(Board board) {
   
   // Text
   {
+    LfUIElementProps props = lf_get_theme().text_props;
+    props.text_color = LF_BLACK;
+    lf_push_style_props(props);
     lf_text(text);
     lf_next_line();
     char str[12];
     sprintf(str, "%d", board.score);
     lf_text(str);
+    lf_pop_style_props();
   }
 
   lf_div_end();
@@ -188,17 +202,17 @@ int main(int argc, char *argv[])
     
     new_block(&game_board);
 
-    if (next_time - current_time > 1) {
+    if (next_time - current_time > .5) {
       current_time = next_time;
       pthread_mutex_lock(&movement_mutex);
 
       drop_block(&game_board);
 
       pthread_mutex_unlock(&movement_mutex);
-    } else if (movement != 0 && check_collision(game_board, movement)) {
+    } else if (movement != 0) {
       pthread_mutex_lock(&movement_mutex);
     
-      move_block(game_board.current_block, movement);
+      move_block(&game_board, movement);
 
       pthread_mutex_unlock(&movement_mutex);
 
@@ -206,7 +220,7 @@ int main(int argc, char *argv[])
     }
  
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClearColor(0.106f, 0.184f, 0.208f, 1.0f);
 
     lf_begin();
     render_game_board(game_board);
