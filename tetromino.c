@@ -116,9 +116,6 @@ void initialize_all_blocks() {
   all_blocks[6] = s_block;
 }
 
-Block copy_block() {
-  
-}
 Block* load_block() {
   int rand_index = rand() % 7;
   Block template = all_blocks[rand_index];

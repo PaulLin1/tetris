@@ -52,12 +52,12 @@ static void render_game_board(Board board) {
       }
     }
   }
-
   lf_div_end();
 }
 
 static void render_next(Board board) {
   const char* text = "Next";
+
   // Container
   {
     LfUIElementProps props = lf_get_theme().div_props;
@@ -85,7 +85,6 @@ static void render_next(Board board) {
   {
     lf_next_line();
     
-
     lf_set_ptr_y_absolute(120);
     int next_block_size = board.next_block->size;
     for (int row = 0; row < next_block_size; ++row) {
@@ -111,6 +110,7 @@ static void render_next(Board board) {
 
 static void render_scoreboard(Board board) {
   const char* text = "Scoreboard";
+
   // Container
   {
     LfUIElementProps props = lf_get_theme().div_props;
@@ -145,15 +145,11 @@ static void render_scoreboard(Board board) {
 void disable_canonical_mode() {
     struct termios old_tio, new_tio;
 
-    // Get the terminal settings
     tcgetattr(STDIN_FILENO, &old_tio);
 
-    // Copy old settings and modify new settings
-
     new_tio = old_tio;
-    new_tio.c_lflag &= ~(ICANON | ECHO); // Disable canonical mode and echo
+    new_tio.c_lflag &= ~(ICANON | ECHO); 
 
-    // Apply the new settings
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
 }
 
@@ -194,7 +190,6 @@ int main(int argc, char *argv[])
 
   pthread_t input_thread;
   pthread_create(&input_thread, NULL, input_handler, NULL);
- 
 
   while(!glfwWindowShouldClose(window)) {
     time_t next_time;  
@@ -202,7 +197,7 @@ int main(int argc, char *argv[])
     
     new_block(&game_board);
 
-    if (next_time - current_time > .5) {
+    if (next_time - current_time > 5) {
       current_time = next_time;
       pthread_mutex_lock(&movement_mutex);
 

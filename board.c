@@ -109,12 +109,13 @@ void move_block(Board* board, char movement) {
       block->current_x++;
     }
     while (block->current_x > COLS - block->size) {
-      block->current_y--;
+      block->current_x--;
     }
     if (!check_collision(board, 'l')) { 
       for (int i = 0; i < n * n; ++i) {
-      block->cells[i] = temp[i];
-    }
+        block->cells[i] = temp[i];
+      }
+      block->rotation = (block->rotation + 1) % 4;
     }
   }
 }
