@@ -17,6 +17,15 @@ Board init_board() {
   return board;
 }
 
+int check_end(Board* board) {
+  for (int i = 0; i < COLS; ++i) {
+    if (board->cells[0][i] == '1') {
+      return 1;
+    }
+  } 
+  return 0;
+}
+
 void update_board(Board* board) {
   Block* curr = board->current_block;
   

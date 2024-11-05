@@ -192,6 +192,9 @@ int main(int argc, char *argv[])
   pthread_create(&input_thread, NULL, input_handler, NULL);
 
   while(!glfwWindowShouldClose(window)) {
+    if (check_end(&game_board)) {
+      break;
+    }
     time_t next_time;  
     time(&next_time);
     
