@@ -4,12 +4,12 @@
 #include <stddef.h>
 
 typedef struct {
-  int* cells;
-  size_t size;
-  int current_x;
-  int current_y;
-  int rotation; // 0-3
-  int dropped; // 0 = False; 1 = True
+	int* cells; // Row major arrays
+	size_t size;
+	int current_x;
+	int current_y;
+	int rotation; // 0-3
+	int dropped; // 0 = False; 1 = True
 } Block;
 
 void initialize_all_blocks();

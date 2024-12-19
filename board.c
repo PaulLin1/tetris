@@ -7,19 +7,19 @@
 #include "constants.h"
 
 Board init_board() {
-  Board board;
-  for (int y = 0; y < ROWS; y++) {
-    for (int x = 0; x < COLS; x++) {
-      board.cells[y][x] = '*';
-    }
-  }
-  board.score = 0;
-  return board;
+	Board board;
+	for (int y = 0; y < ROWS; y++) {
+		for (int x = 0; x < COLS; x++) {
+			board.cells[y][x] = 0;
+		}
+	}
+	board.score = 0;
+	return board;
 }
 
 int check_end(Board* board) {
   for (int i = 0; i < COLS; ++i) {
-    if (board->cells[0][i] == '1') {
+    if (board->cells[0][i] == 1) {
       return 1;
     }
   } 
@@ -31,9 +31,9 @@ void update_board(Board* board) {
   
   for (int y = 0; y < curr->size; y++) {
     for (int x = 0; x < curr->size; x++) {
-      char current_char = curr->cells[(y*curr->size) + x];
-      if (current_char == '1') {
-        board->cells[curr->current_y + y][curr->current_x + x] = current_char;
+      int current_pixel = curr->cells[(y*curr->size) + x];
+      if (current_pixel == 1) {
+        board->cells[curr->current_y + y][curr->current_x + x] = current_pixel;
       }
     }
   }
@@ -68,17 +68,17 @@ int check_collision(Board* board, char movement) {
   }
   for (int i = 0; i < block->size; ++i) {
     for (int j = 0; j < block->size; ++j) {
-      if (block->cells[(j * block->size) + i] == '1') {
+      if (block->cells[(j * block->size) + i] == 1) {
         int new_x = block->current_x + i + dx;
         int new_y = block->current_y + j + dy;
-        if (new_y >= ROWS || (board->cells[new_y][new_x] == '1' && movement == 's')) {
+        if (new_y >= ROWS || (board->cells[new_y][new_x] == 1 && movement == 's')) {
           block->dropped = 1;
           return 0;
         }
         if (new_x < 0 || new_x >= COLS || new_y < 0 || new_y >= ROWS) {
           return 0;
         }
-        if (board->cells[new_y][new_x] == '1') {
+        if (board->cells[new_y][new_x] == 1) {
           return 0;
         }
       }
@@ -135,9 +135,9 @@ void new_block(Board* board) {
   if (curr->dropped) {
     for (int y = 0; y < curr->size; y++) {
       for (int x = 0; x < curr->size; x++) {
-        char current_char = curr->cells[(y*curr->size) + x];
-        if (current_char == '1') {
-          board->cells[curr->current_y + y][curr->current_x + x] = current_char;
+        int current_pixel = curr->cells[(y*curr->size) + x];
+        if (current_pixel == 1) {
+          board->cells[curr->current_y + y][curr->current_x + x] = current_pixel;
         }
       }
     }
@@ -156,7 +156,7 @@ void tetris(Board *board) {
     int total = 0;
 
     for (int i = 0; i < COLS; ++i) {
-      if (board->cells[j][i] == '1') {
+      if (board->cells[j][i] == 1) {
         total += 1; 
       }
     }
@@ -169,7 +169,7 @@ void tetris(Board *board) {
       }
 
       for (int q = 0; q < COLS; ++q) {
-        board->cells[0][q] = '*';
+        board->cells[0][q] = 0;
       }
     }
   }

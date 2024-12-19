@@ -5,10 +5,10 @@
 #include "tetromino.h"
 
 typedef struct {
-  char cells[ROWS][COLS];
-  Block *current_block;
-  Block *next_block;
-  int score;
+    int cells[ROWS][COLS];
+    Block *current_block;
+    Block *next_block;
+    int score;
 } Board;
 
 Board init_board();

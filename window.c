@@ -40,7 +40,7 @@ static void render_game_board(Board board) {
         float block_size = 30.0f;
         LfColor color;
         switch (board.cells[row][col]) {
-          case '1':
+          case 1:
             color = (LfColor){62, 33, 36, 255};
             break;
           default:
@@ -93,7 +93,7 @@ static void render_next(Board board) {
         float block_size = 30.0f;
         LfColor color;
         switch (board.next_block->cells[(row * next_block_size) +col]) {
-          case '1':
+          case 1:
             color = (LfColor){62, 33, 36, 255};
             break;
           default:
