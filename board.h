@@ -5,7 +5,7 @@
 #include "tetromino.h"
 
 typedef struct {
-    int cells[ROWS][COLS];
+    int cells[ROWS * COLS];
     Block *current_block;
     Block *next_block;
     int score;
