@@ -2,9 +2,9 @@ CC = gcc
 
 CFLAGS = -lglfw -lGL -lleif -lclipboard -lm -lxcb
 
-TARGET = window
+TARGET = a.out
 
-SRCS = window.c board.c tetromino.c
+SRCS = windowed.c board.c tetromino.c
 
 OBJS = $(SRCS:.c=.o)
 

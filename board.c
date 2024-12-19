@@ -73,6 +73,7 @@ int check_collision(Board* board, char movement) {
                 int new_y = block->current_y + j + dy;
                 if (new_y >= ROWS || (board->cells[new_y * COLS + new_x] == 1 && movement == 's')) {
                     block->dropped = 1;
+                    new_block(board);
                     return 0;
                 }
                 if (new_x < 0 || new_x >= COLS || new_y < 0 || new_y >= ROWS) {
@@ -127,22 +128,20 @@ void move_block(Board* board, char movement) {
 void new_block(Board* board) {
     Block* curr = board->current_block;
 
-    if (curr->dropped) {
-        for (int y = 0; y < curr->size; y++) {
-            for (int x = 0; x < curr->size; x++) {
-                int current_pixel = curr->cells[y * curr->size + x];
-                if (current_pixel == 1) {
-                    board->cells[(curr->current_y + y) * COLS + (curr->current_x + x)] = current_pixel;
-                }
+    for (int y = 0; y < curr->size; y++) {
+        for (int x = 0; x < curr->size; x++) {
+            int current_pixel = curr->cells[y * curr->size + x];
+            if (current_pixel == 1) {
+                board->cells[(curr->current_y + y) * COLS + (curr->current_x + x)] = current_pixel;
             }
         }
-        tetris(board);
-        board->current_block = board->next_block;
-        Block* z = malloc(sizeof(Block));
-        Block* temp = load_block();
-        memcpy(z, temp, sizeof(Block));
-        board->next_block = z;
     }
+    tetris(board);
+    board->current_block = board->next_block;
+    Block* z = malloc(sizeof(Block));
+    Block* temp = load_block();
+    memcpy(z, temp, sizeof(Block));
+    board->next_block = z;
 }
 
 void tetris(Board *board) {
@@ -164,10 +163,12 @@ void tetris(Board *board) {
             }
 
             for (int q = 0; q < COLS; ++q) {
-                board->cells[q] = 0;  // Clear top row
+                board->cells[q] = 0;  // Creates empty top row
             }
         }
     }
+ 
+    // Scoring: number of rows cleared at once multiplies the reward
     switch (clear_counter) {
         case 1:
             board->score += 100;
