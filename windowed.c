@@ -20,40 +20,40 @@ static struct timeval last_drop, current_time;
 static pthread_mutex_t movement_mutex;
 
 static void render_game_board(Board board) {
-	update_board(&board);
-	const char* temp = "Tetris Board";
+    update_board(&board);
+    const char* temp = "Tetris Board";
 
-	// Container
-	{
-		LfUIElementProps props = lf_get_theme().div_props;
-		props.color = (LfColor){27, 47, 53, 255};
-		lf_push_style_props(props);
+    // Container
+    {
+        LfUIElementProps props = lf_get_theme().div_props;
+        props.color = (LfColor){27, 47, 53, 255};
+        lf_push_style_props(props);
 
-		float width = 300.0f, height = 600.0f;
-		lf_div_begin(((vec2s){(winw) / 2.0f, (winh - height) / 2.0f}), ((vec2s){width, height}), false);
+        float width = 300.0f, height = 600.0f;
+        lf_div_begin(((vec2s){(winw) / 2.0f, (winh - height) / 2.0f}), ((vec2s){width, height}), false);
 
-		lf_pop_style_props();
-	}
+        lf_pop_style_props();
+    }
 
-	// Grid
-	{
-		for (int row = 0; row < ROWS; ++row) {
-			for (int col = 0; col < COLS; ++col) {
-				float block_size = 30.0f;
-				LfColor color;
-				switch (board.cells[row * COLS + col]) {
-					case 1:
-					color = (LfColor){62, 33, 36, 255};
-					break;
-					default:
-					color = (LfColor){69, 80, 77, 255};
-					break;
-				}
-				lf_rect(block_size, block_size, color, 2.0f); 
-			}
-		}
-	}
-	lf_div_end();
+    // Grid
+    {
+        for (int row = 0; row < ROWS; ++row) {
+            for (int col = 0; col < COLS; ++col) {
+                float block_size = 30.0f;
+                LfColor color;
+                switch (board.cells[row * COLS + col]) {
+                    case 1:
+                    color = (LfColor){62, 33, 36, 255};
+                    break;
+                    default:
+                    color = (LfColor){69, 80, 77, 255};
+                    break;
+                }
+                lf_rect(block_size, block_size, color, 2.0f); 
+            }
+        }
+    }
+    lf_div_end();
 }
 
 static void render_next(Board board) {
