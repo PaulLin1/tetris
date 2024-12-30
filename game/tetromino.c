@@ -8,7 +8,7 @@
 static Block all_blocks[7];
 
 void initialize_all_blocks() {
-	size_t o_block_length = 2;
+size_t o_block_length = 2;
 	int *o_block_arr = malloc(o_block_length * o_block_length * sizeof(int));
 	o_block_arr[0] = 1; 
 	o_block_arr[1] = 1; 
